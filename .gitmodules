@@ -9,4 +9,4 @@
 	url = https://github.com/statiqdev/Statiq.Docs.git
 [submodule "statiqdev.github.io"]
 	path = statiqdev.github.io
-	url = https://github.com/statiqdev.github.io.git
+	url = https://github.com/statiqdev/statiqdev.github.io.git
