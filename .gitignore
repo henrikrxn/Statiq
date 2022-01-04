@@ -8,3 +8,4 @@
 !Statiq.sln
 !build.cmd
 !Directory.Build.props
+!Statiq.Build/**

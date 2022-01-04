@@ -1,8 +1,0 @@
-<Project>
-    <PropertyGroup>
-        <!-- The NuGet versions that should be referenced, or "local" to use local references -->
-        <StatiqDocsVersion>local</StatiqDocsVersion>
-        <StatiqWebVersion>local</StatiqWebVersion>
-        <StatiqFrameworkVersion>local</StatiqFrameworkVersion>
-    </PropertyGroup>
-</Project>
