@@ -1,35 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Statiq.Common;
 using Statiq.Core;
 
 namespace Statiq.Build.Pipelines
 {
-    public abstract class BuildBase : Pipeline
+    public class Build : Pipeline, INamedPipeline
     {
         private const int RestoreRetries = 40;
 
         private const int RestoreDelaySeconds = 30;
 
-        protected BuildBase(
-            string name,
-            bool nestedProjectFiles,
-            params string[] references)
+        private readonly Project _project;
+
+        public Build(Project project)
         {
+            _project = project;
+
             Dependencies.Add(nameof(GetVersions));
 
-            if (references is object)
+            if (project.References is object)
             {
-                foreach (string reference in references)
+                foreach (string reference in project.References)
                 {
-                    Dependencies.Add($"Build{reference}");
+                    Dependencies.Add($"{nameof(Build)}{reference}");
                 }
             }
 
             ProcessModules = new ModuleList
             {
-                new ReadFiles($"Statiq.{name}/src/{(nestedProjectFiles ? "**" : "*")}/*.csproj"),
+                new ReadFiles($"Statiq.{project.Name}/src/{(project.NestedProjectFiles ? "**" : "*")}/*.csproj"),
                 new RetryModules(
                     new StartProcess("dotnet")
                         .WithArgument("restore")
@@ -52,5 +52,7 @@ namespace Statiq.Build.Pipelines
                     .LogOutput()
             };
         }
+
+        public string PipelineName => $"{nameof(Build)}{_project.Name}";
     }
 }

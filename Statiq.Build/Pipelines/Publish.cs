@@ -7,20 +7,32 @@ using Statiq.Core;
 
 namespace Statiq.Build.Pipelines
 {
-    public abstract class PublishBase : Pipeline
+    public class Publish : Pipeline, INamedPipeline
     {
-        protected PublishBase(string name)
+        private readonly Project _project;
+
+        public Publish(Project project)
         {
+            _project = project;
+
             // Don't publish unless told to (I.e. during deployment as a dependency of the corresponding DeployXyz pipeline)
             ExecutionPolicy = ExecutionPolicy.Manual;
 
-            Dependencies.Add($"Pack{name}");
+            Dependencies.Add($"{nameof(Pack)}{project.Name}");
+
+            if (project.References is object)
+            {
+                foreach (string reference in project.References)
+                {
+                    Dependencies.Add($"{nameof(Publish)}{reference}");
+                }
+            }
 
             ProcessModules = new ModuleList
             {
                 new ThrowExceptionIf(Config.ContainsSettings("STATIQ_NUGET_API_KEY").IsFalse(), "STATIQ_NUGET_API_KEY setting missing"),
                 new ThrowExceptionIf(Config.ContainsSettings("STATIQ_GITHUB_TOKEN").IsFalse(), "STATIQ_GITHUB_TOKEN setting missing"),
-                new ReadFiles(Config.FromContext(ctx => ctx.FileSystem.GetOutputPath($"Statiq.{name}/*.nupkg").FullPath)),
+                new ReadFiles(Config.FromContext(ctx => ctx.FileSystem.GetOutputPath($"Statiq.{project.Name}/*.nupkg").FullPath)),
                 new StartProcess("nuget")
                     .WithArgument("push")
                     .WithArgument(Config.FromDocument(doc => doc.Source.FullPath), true)
@@ -32,7 +44,7 @@ namespace Statiq.Build.Pipelines
                 new ExecuteConfig(Config.FromContext(async ctx =>
                 {
                     // Get release notes
-                    IFile releaseNotesFile = ctx.FileSystem.GetInputFile($"Statiq.{name}/RELEASE.md");
+                    IFile releaseNotesFile = ctx.FileSystem.GetInputFile($"Statiq.{project.Name}/RELEASE.md");
                     string releaseNotes = await releaseNotesFile.ReadAllTextAsync();
                     string[] lines = releaseNotes.Trim().Split("\n#", StringSplitOptions.RemoveEmptyEntries)[0].Trim().Split("\n").Select(x => x.Trim()).ToArray();
                     string version = lines[0].Split(' ', StringSplitOptions.RemoveEmptyEntries)[1];
@@ -49,7 +61,7 @@ namespace Statiq.Build.Pipelines
 
                     try
                     {
-                        Release release = await github.Repository.Release.Create("statiqdev", $"Statiq.{name}", new NewRelease("v" + version)
+                        Release release = await github.Repository.Release.Create("statiqdev", $"Statiq.{project.Name}", new NewRelease("v" + version)
                         {
                             Name = version,
                             Body = string.Join(Environment.NewLine, notes),
@@ -65,5 +77,7 @@ namespace Statiq.Build.Pipelines
                 }))
             };
         }
+
+        public string PipelineName => $"{nameof(Publish)}{_project.Name}";
     }
 }

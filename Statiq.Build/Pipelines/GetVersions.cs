@@ -13,11 +13,11 @@ namespace Statiq.Build.Pipelines
                 new ExecuteConfig(Config.FromContext(async context =>
                 {
                     MetadataItems metadata = new MetadataItems();
-                    foreach (string name in ProjectNames.GetAll())
+                    foreach (Project project in Project.All)
                     {
-                        string version = await context.GetVersionFromReleaseFileAsync(name);
-                        context.LogInformation($"{name} version {version}");
-                        metadata.Add(name, version);
+                        string version = await context.GetVersionFromReleaseFileAsync(project.Name);
+                        context.LogInformation($"{project.Name} version {version}");
+                        metadata.Add(project.Name, version);
                     }
                     return context.CreateDocument(metadata);
                 }))

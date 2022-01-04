@@ -8,10 +8,10 @@ namespace Statiq.Build
     {
         public static StartProcess WithVersions(this StartProcess startProcess)
         {
-            foreach (string name in ProjectNames.GetAll())
+            foreach (Project project in Project.All)
             {
                 startProcess = startProcess.WithArgument(Config.FromContext(context =>
-                    $"-p:Statiq{name}Version=\"{context.Outputs.FromPipeline(nameof(GetVersions))[0].GetString(name)}\""));
+                    $"-p:Statiq{project.Name}Version=\"{context.Outputs.FromPipeline(nameof(GetVersions))[0].GetString(project.Name)}\""));
             }
             return startProcess;
         }

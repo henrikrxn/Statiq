@@ -3,26 +3,38 @@ using Statiq.Core;
 
 namespace Statiq.Build.Pipelines
 {
-    public abstract class PackBase : Pipeline
+    public class Pack : Pipeline, INamedPipeline
     {
-        protected PackBase(string name, bool nestedProjectFiles)
+        private readonly Project _project;
+
+        public Pack(Project project)
         {
-            Dependencies.Add($"Test{name}");
+            _project = project;
+
+            Dependencies.Add($"{nameof(Test)}{project.Name}");
+
+            if (project.References is object)
+            {
+                foreach (string reference in project.References)
+                {
+                    Dependencies.Add($"{nameof(Pack)}{reference}");
+                }
+            }
 
             ProcessModules = new ModuleList
             {
                 new ThrowExceptionIf(Config.ContainsSettings("DAVIDGLICK_CERTPASS").IsFalse(), "DAVIDGLICK_CERTPASS setting missing"),
-                new ReadFiles($"Statiq.{name}/src/{(nestedProjectFiles ? "**" : "*")}/*.csproj"),
+                new ReadFiles($"Statiq.{project.Name}/src/{(project.NestedProjectFiles ? "**" : "*")}/*.csproj"),
                 new StartProcess("dotnet")
                     .WithArgument("pack")
                     .WithArgument("--no-build")
                     .WithArgument("--no-restore")
                     .WithVersions()
-                    .WithArgument("-o", Config.FromContext(ctx => ctx.FileSystem.GetOutputPath($"Statiq.{name}").FullPath), true)
+                    .WithArgument("-o", Config.FromContext(ctx => ctx.FileSystem.GetOutputPath($"Statiq.{project.Name}").FullPath), true)
                     .WithArgument(Config.FromDocument(doc => doc.Source.FullPath), true)
                     .WithParallelExecution(false)
                     .LogOutput(),
-                new ReadFiles(Config.FromContext(ctx => ctx.FileSystem.GetOutputPath($"Statiq.{name}/*.nupkg").FullPath)),
+                new ReadFiles(Config.FromContext(ctx => ctx.FileSystem.GetOutputPath($"Statiq.{project.Name}/*.nupkg").FullPath)),
                 new StartProcess("nuget")
                     .WithArgument("sign")
                     .WithArgument(Config.FromDocument(doc => doc.Source.FullPath), true)
@@ -35,5 +47,7 @@ namespace Statiq.Build.Pipelines
                     .LogOutput()
             };
         }
+
+        public string PipelineName => $"{nameof(Pack)}{_project.Name}";
     }
 }
