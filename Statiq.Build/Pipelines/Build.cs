@@ -37,6 +37,7 @@ namespace Statiq.Build.Pipelines
                         .WithVersions()
                         .WithArgument(Config.FromDocument(doc => doc.Source.FullPath), true)
                         .WithParallelExecution(false)
+                        .LogErrors(false)
                         .LogOutput())
                     .WithRetries(RestoreRetries)
                     .WithSleepDuration(x => TimeSpan.FromSeconds(x * RestoreDelaySeconds))
