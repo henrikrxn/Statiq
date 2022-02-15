@@ -5,6 +5,7 @@
     <mapping directory="$PROJECT_DIR$/Statiq.Docs" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Statiq.Framework" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Statiq.Web" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/marvin" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/statiqdev.github.io" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/statiqdev.github.io/theme" vcs="Git" />
   </component>
