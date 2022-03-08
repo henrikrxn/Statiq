@@ -7,8 +7,8 @@
 [submodule "Statiq.Docs"]
 	path = Statiq.Docs
 	url = https://github.com/statiqdev/Statiq.Docs.git
-[submodule "statiqdev.github.io"]
-	path = statiqdev.github.io
+[submodule "Website"]
+	path = Website
 	url = https://github.com/statiqdev/statiqdev.github.io.git
 [submodule "marvin"]
 	path = marvin
