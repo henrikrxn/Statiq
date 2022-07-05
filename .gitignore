@@ -9,3 +9,4 @@
 !build.cmd
 !Directory.Build.props
 !Statiq.Build/**
+playground
