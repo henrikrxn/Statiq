@@ -1,0 +1,27 @@
+ProjectSets:
+  - Name: StatiqFramework
+    RootPath: Statiq.Framework
+    SourceProjects: "src/**/*.csproj"
+    TestProjects: "tests/**/*.csproj"
+    GitHubOwner: "statiqdev"
+    GitHubName: "Statiq.Framework"
+  - Name: StatiqWeb
+    RootPath: Statiq.Web
+    SourceProjects: "src/*/*.csproj"
+    TestProjects: "tests/*/*.csproj"
+    ProjectSetDependencies:
+      - StatiqFramework
+    GitHubOwner: "statiqdev"
+    GitHubName: "Statiq.Web"
+  - Name: StatiqDocs
+    RootPath: Statiq.Docs
+    SourceProjects: "src/*/*.csproj"
+    TestProjects: "tests/*/*.csproj"
+    ProjectSetDependencies:
+      - StatiqFramework
+      - StatiqWeb
+    GitHubOwner: "statiqdev"
+    GitHubName: "Statiq.Docs"
+GitHubToken: => GetString("STATIQ_GITHUB_TOKEN")
+NuGetApiKey: => GetString("STATIQ_NUGET_API_KEY")
+CopyPackagesTo: "C:/Code/PackageSource"
