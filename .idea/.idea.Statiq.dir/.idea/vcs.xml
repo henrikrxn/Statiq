@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Statiq.Docs" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Statiq.Framework" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Statiq.Web" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Website" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Website/external/Statiq.Web" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Website/theme" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/marvin" vcs="Git" />
   </component>
 </project>
