@@ -10,4 +10,4 @@
 !Directory.Build.props
 !Statiq.Build/**
 !marvin*
-playground
+Playground/
